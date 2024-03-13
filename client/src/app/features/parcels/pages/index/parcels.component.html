@@ -1,0 +1,85 @@
+<div class="card">
+  <p-table
+    #dt
+    [value]="parcels"
+    [lazy]="true"
+    (onLazyLoad)="lazyLoad($event)"
+    dataKey="id"
+    [tableStyle]="{ 'min-width': '75rem' }"
+    [paginator]="true"
+    [rows]="pagination.limit"
+    [totalRecords]="pagination.total"
+    [loading]="loading"
+    [globalFilterFields]="['description', 'country']"
+    [filters]="filters"
+  >
+    <ng-template pTemplate="caption">
+      <div class="flex flex-gap">
+        <button
+          pButton
+          label="Clear"
+          class="p-button-outlined"
+          icon="pi pi-filter-slash"
+          (click)="clearFilters(dt)"
+        ></button>
+        <button
+          pButton
+          label="Add New"
+          class="p-button"
+          icon="pi pi-plus"
+          (click)="openNewParcelModal()"
+        ></button>
+      </div>
+    </ng-template>
+    <ng-template pTemplate="header">
+      <tr>
+        <th>#</th>
+        <th>Trace ID</th>
+        <th>SKU</th>
+        <th>
+          <div class="flex align-items-center">
+            Description
+            <p-columnFilter
+              [showAddButton]="false"
+              [showOperator]="false"
+              type="text"
+              field="description"
+              display="menu"
+              [matchModeOptions]="descriptionFilterConstraints"
+              matchMode="is"
+            ></p-columnFilter>
+          </div>
+        </th>
+        <th>
+          <div class="flex align-items-center">
+            Country
+            <p-columnFilter
+              [showAddButton]="false"
+              [showOperator]="false"
+              type="text"
+              field="country"
+              display="menu"
+              [matchModeOptions]="countryFilterContraints"
+              matchMode="is"
+            ></p-columnFilter>
+          </div>
+        </th>
+        <th>Town</th>
+        <th>Street Address</th>
+        <th>Delivery Date</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-parcel>
+      <tr>
+        <td>{{ parcel.id }}</td>
+        <td>{{ parcel.traceId }}</td>
+        <td>{{ parcel.sku }}</td>
+        <td>{{ parcel.description }}</td>
+        <td>{{ parcel.country }}</td>
+        <td>{{ parcel.town }}</td>
+        <td>{{ parcel.streetAddress }}</td>
+        <td>{{ parcel.deliveryDate }}</td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>

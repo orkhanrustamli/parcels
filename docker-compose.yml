@@ -1,0 +1,52 @@
+version: '3'
+services:
+    postgres:
+        container_name: postgres
+        image: postgres:latest
+        volumes:
+            - /tmp/postgres:/data/postgres
+        env_file:
+            - docker.env
+
+    pgadmin:
+        links:
+            - postgres:postgres
+        container_name: pgadmin
+        image: dpage/pgadmin4
+        ports:
+            - '8080:80'
+        volumes:
+            - /tmp/pgadmin:/root/.pgadmin
+        env_file:
+            - docker.env
+
+    nginx:
+        depends_on:
+            - server
+            - client
+        restart: always
+        build:
+            dockerfile: Dockerfile.dev
+            context: ./nginx
+        ports:
+            - '3000:80'
+    server:
+        build:
+            dockerfile: Dockerfile.dev
+            context: ./server
+        volumes:
+            - /app/node_modules
+            - ./server:/app
+        command: npm run start:dev
+        depends_on:
+            - postgres
+        env_file:
+            - docker.env
+    client:
+        stdin_open: true
+        build:
+            dockerfile: Dockerfile.dev
+            context: ./client
+        volumes:
+            - /app/node_modules
+            - ./client:/app
